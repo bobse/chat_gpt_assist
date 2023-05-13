@@ -10,3 +10,4 @@ if __name__ == '__main__':
 	}
 	for key in commands.keys():
 		commands[key].execute(Response(response))
+		print(commands[key].examples())
