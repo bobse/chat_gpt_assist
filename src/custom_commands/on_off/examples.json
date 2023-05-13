@@ -3,14 +3,21 @@
   "user_input": "turn on the tv",
     "response": {
       "command": "on_off",
-      "keywords": ["ON"]
+      "keywords": ["ON", "tv"]
     }
   },
   {
-  "user_input": "turn the computer off",
+  "user_input": "turn off dinning room lights",
     "response": {
       "command": "on_off",
-      "keywords": ["OFF"]
+      "keywords": ["ON", "dinning_room"]
+    }
+  },
+  {
+  "user_input": "turn the office computer off",
+    "response": {
+      "command": "on_off",
+      "keywords": ["OFF", "office_computer"]
     }
   }
 ]
