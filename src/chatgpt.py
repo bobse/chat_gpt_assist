@@ -93,7 +93,7 @@ def process_command(user_prompt, model="gpt-3.5-turbo"):
     {{
     "command": "stereo_control",
     "keywords": ["change"],
-    "full_text" :  "turn on the tv and the living room lights"
+    "full_text" :  "change the music"
     }}
 
     Example 9:

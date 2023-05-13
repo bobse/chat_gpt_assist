@@ -1,0 +1,16 @@
+[
+  {
+  "user_input": "turn on the tv",
+    "response": {
+      "command": "on_off",
+      "keywords": ["ON"]
+    }
+  },
+  {
+  "user_input": "turn the computer off",
+    "response": {
+      "command": "on_off",
+      "keywords": ["OFF"]
+    }
+  }
+]

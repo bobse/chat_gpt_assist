@@ -1,0 +1,16 @@
+[
+  {
+  "user_input": "turn the volume on the tv up",
+    "response": {
+      "command": "tv_control",
+      "keywords": ["volume", "up"]
+    }
+  },
+  {
+  "user_input": "set the television to mute",
+    "response": {
+      "command": "tv_control",
+      "keywords": ["mute"]
+    }
+  }
+]
