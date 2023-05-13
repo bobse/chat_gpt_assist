@@ -1,0 +1,19 @@
+- abstract class CustomCommand
+    methods:
+        - get_examples :array
+        - get_command_name :string
+        - execute
+
+- class Response (maybe dataclass)?
+
+
+- class Prompter
+    methods:
+        - constructor - call CommandLoader and saves commands internally.
+        - build_prompt: using commands examples and names builds the standard prompt and saves in
+        instance variable
+        - ask(question:str): Response
+
+- class CommandLoader
+        - static method - loads all commands dinamicaly : returns dict {command_name: class}
+        - during loading must check if command is instance of abstract CustomCommand
