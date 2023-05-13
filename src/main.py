@@ -1,9 +1,7 @@
 from autoloader import AutoLoader
 from prompter import Prompter
-from pprint import pprint
 from dotenv import load_dotenv
 import logging
-import os
 
 logger = logging.getLogger('main_logger')
 logger.setLevel(logging.DEBUG)
