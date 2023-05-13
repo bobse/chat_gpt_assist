@@ -29,7 +29,7 @@ def process_command(user_prompt, model="gpt-3.5-turbo"):
     - Expected output in JSON format:
     {{
     "command": "turn_on",
-    "keyword": ["tv"],
+    "keywords": ["tv"],
     "full_text" : "turn tv on"
     }}
 
@@ -38,7 +38,7 @@ def process_command(user_prompt, model="gpt-3.5-turbo"):
     - Expected output in JSON format:
     {{
     "command" :  "turn_off",
-    "keyword" : ["dinning_room_lights"],
+    "keywords" : ["dinning_room_lights"],
     "full_text" : "Turn off dinning room lights"
     }}
 
@@ -47,7 +47,7 @@ def process_command(user_prompt, model="gpt-3.5-turbo"):
     - Expected output in JSON format:
     {{
     "command" :  "stereo_control",
-    "keyword" : ["play", "madonna", "like_a_virgin"],
+    "keywords" : ["play", "madonna", "like_a_virgin"],
     "full_text": "Play Madonna"
     }}
 
@@ -56,7 +56,7 @@ def process_command(user_prompt, model="gpt-3.5-turbo"):
     - Expected output in JSON format:
     {{
     "command" :  "ask_google",
-    "keyword" : ["how_old_is_william_hurt"],
+    "keywords" : ["how_old_is_william_hurt"],
     "full_text" : "ask google how old William Hurt is."
     }}
 
@@ -65,7 +65,7 @@ def process_command(user_prompt, model="gpt-3.5-turbo"):
     - Expected output in JSON format:
     {{
     "command" :  "shopping_list",
-    "keyword" : ['banana', 'olive_oil'],
+    "keywords" : ['banana', 'olive_oil'],
     "full_text" : "Add a banana and olive oil to my shopping list"
     }}
 
@@ -74,7 +74,7 @@ def process_command(user_prompt, model="gpt-3.5-turbo"):
     - Expected output in JSON format:
     {{
     "command": "turn_on",
-    "keyword": ["tv", "living_room_lights"],
+    "keywords": ["tv", "living_room_lights"],
     "full_text" :  "turn on the tv and the living room lights"
     }}
 
@@ -83,7 +83,7 @@ def process_command(user_prompt, model="gpt-3.5-turbo"):
     - Expected output in JSON format:
     {{
     "command": "tv_control",
-    "keyword": ["volume", "up"],
+    "keywords": ["volume", "up"],
     "full_text" :  "turn on the tv and the living room lights"
     }}
 
@@ -92,7 +92,7 @@ def process_command(user_prompt, model="gpt-3.5-turbo"):
     - Expected output in JSON format:
     {{
     "command": "stereo_control",
-    "keyword": ["change"],
+    "keywords": ["change"],
     "full_text" :  "turn on the tv and the living room lights"
     }}
 
@@ -101,14 +101,14 @@ def process_command(user_prompt, model="gpt-3.5-turbo"):
     - Expected output in JSON format:
     {{
     "command": "stereo_control",
-    "keyword": ["pause"],
+    "keywords": ["pause"],
     "full_text" :  "turn on the tv and the living room lights"
     }}
 
     Your response must always be in json format in snake case typing  in the following format with the following keys 
-    "command" and "keyword".
+    "command" and "keywords".
 
-    if you can't classify the command or the keyword, the value must be "unknown".
+    if you can't classify the command or the keywords, the value must be "unknown".
 
     Here's  a list of allowed commands:
     {', '.join([f"{n+1}. {c}" for n,c in enumerate(commands)])}
