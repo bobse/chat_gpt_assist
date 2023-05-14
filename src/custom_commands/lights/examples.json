@@ -1,0 +1,10 @@
+[
+  {
+    "user_input": "turn off dinning room lights",
+    "keywords": ["OFF", "dinning_room"]
+  },
+  {
+    "user_input": "Studio lights on",
+    "keywords": ["ON", "studio"]
+  }
+]
