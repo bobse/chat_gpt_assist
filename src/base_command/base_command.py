@@ -30,5 +30,5 @@ class BaseCommand(ABC):
 
     @staticmethod
     @abstractmethod
-    def execute(response: PrompterResponse):
+    def execute(response: PrompterResponse) -> str | None:
         raise NotImplementedError()

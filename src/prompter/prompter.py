@@ -16,24 +16,26 @@ class Prompter:
     def process_command(
         self, user_prompt: str, show_prompt=False, model="gpt-3.5-turbo"
     ):
-        openai.api_key = os.getenv("OPENAI_API_KEY")
-        logger.debug(f"Prompt: {user_prompt}")
-        full_prompt = self._generate_prompt(user_prompt)
-
-        if show_prompt:
-            logger.debug(full_prompt)
-
-        messages = [{"role": "user", "content": full_prompt}]
-        response = openai.ChatCompletion.create(
-            model=model,
-            messages=messages,
-            temperature=0,
-        )
-
         try:
+            openai.api_key = os.getenv("OPENAI_API_KEY")
+            logger.debug(f"Prompt: {user_prompt}")
+            full_prompt = self._generate_prompt(user_prompt)
+
+            if show_prompt:
+                logger.debug(full_prompt)
+
+            messages = [{"role": "user", "content": full_prompt}]
+            response = openai.ChatCompletion.create(
+                model=model,
+                messages=messages,
+                temperature=0,
+            )
+
             raw_response = json.loads(response.choices[0].message["content"])
             logger.debug(json.dumps(raw_response, indent=2))
+
             return PrompterResponse(raw_response)
+
         except Exception as e:
             logger.error(e._message)
 
