@@ -2,16 +2,14 @@ import inspect
 import os
 import importlib
 from base_command.base_command import BaseCommand
-import logging
-
-logger = logging.getLogger("main_logger")
+from config import config
 
 
 class AutoLoader:
-    COMMAND_FOLDER = f"{os.path.dirname(__file__)}/custom_commands"
+    COMMAND_FOLDER = f"{os.path.dirname(__file__)}/{config.CUSTOM_CMD_FOLDER}"
 
     @classmethod
-    def load_commands(cls) -> dict:
+    def load_commands(cls) -> dict[str, BaseCommand]:
         commands = {}
         for cmd in cls.load_files():
             class_ = AutoLoader.load_module(cmd)
@@ -21,7 +19,7 @@ class AutoLoader:
         return commands
 
     @classmethod
-    def load_files(cls):
+    def load_files(cls) -> list[str]:
         return [
             folder
             for folder in next(os.walk(cls.COMMAND_FOLDER))[1]
@@ -29,20 +27,20 @@ class AutoLoader:
         ]
 
     @staticmethod
-    def camel_case_transform(command: str):
+    def camel_case_transform(command: str) -> str:
         return "".join([w[0].upper() + w[1:] for w in command.split("_")])
 
     @classmethod
-    def load_module(cls, module_name):
+    def load_module(cls, module_name) -> BaseCommand | None:
         try:
             module = importlib.import_module(
                 f"custom_commands.{module_name}.{module_name}", None
             )
             class_ = getattr(module, AutoLoader.camel_case_transform(module_name))
 
-            if inspect.isabstract(class_) and not isinstance(class_, BaseCommand):
+            if inspect.isabstract(class_) or not issubclass(class_, BaseCommand):
                 return None
             return class_
         except Exception as e:
-            logger.debug(e)
+            config.logger.debug(e)
             return None

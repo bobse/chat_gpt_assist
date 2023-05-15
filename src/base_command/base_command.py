@@ -4,9 +4,7 @@ from prompter.example import Example
 import json
 import os
 import inspect
-import logging
-
-logger = logging.getLogger("main_logger")
+from config import config
 
 
 class BaseCommand(ABC):
@@ -20,13 +18,13 @@ class BaseCommand(ABC):
                     for example_dict in json.load(file):
                         examples.append(Example(example_dict))
         except Exception as e:
-            logger.error(e)
+            config.logger.error(e)
 
         return examples
 
     @classmethod
     def command_name(cls) -> str:
-        return cls.__module__.split(".")[-1]
+        return cls.__module__.replace(".py", "")
 
     @staticmethod
     @abstractmethod

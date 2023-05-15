@@ -1,15 +1,12 @@
 import json
 import openai
-import logging
-import os
+from config import config
 from base_command.base_command import BaseCommand
 from prompter.prompter_response import PrompterResponse
 
-logger = logging.getLogger("main_logger")
-
 
 class Prompter:
-    def __init__(self, commands: dict):
+    def __init__(self, commands: dict[str, BaseCommand]):
         self.commands = commands
         self.base_prompt = self._generate_base_prompt()
 
@@ -17,12 +14,12 @@ class Prompter:
         self, user_prompt: str, show_prompt=False, model="gpt-3.5-turbo"
     ):
         try:
-            openai.api_key = os.getenv("OPENAI_API_KEY")
-            logger.debug(f"Prompt: {user_prompt}")
+            openai.api_key = config.OPENAI_API_KEY
+            config.logger.debug(f"Prompt: {user_prompt}")
             full_prompt = self._generate_prompt(user_prompt)
 
             if show_prompt:
-                logger.debug(full_prompt)
+                config.logger.debug(full_prompt)
 
             messages = [{"role": "user", "content": full_prompt}]
             response = openai.ChatCompletion.create(
@@ -32,12 +29,12 @@ class Prompter:
             )
 
             raw_response = json.loads(response.choices[0].message["content"])
-            logger.debug(json.dumps(raw_response, indent=2))
+            config.logger.debug(json.dumps(raw_response, indent=2))
 
             return PrompterResponse(raw_response)
 
         except Exception as e:
-            logger.error(e._message)
+            config.logger.error(e._message)
 
     def _generate_prompt(self, user_prompt):
         return self.base_prompt.replace("#PROMPT_PLACEHOLDER#", user_prompt)
