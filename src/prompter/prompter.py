@@ -10,16 +10,13 @@ class Prompter:
         self.commands = commands
         self.base_prompt = self._generate_base_prompt()
 
-    def process_command(
-        self, user_prompt: str, show_prompt=False, model="gpt-3.5-turbo"
-    ):
+    def process_command(self, user_prompt: str, model="gpt-3.5-turbo"):
         try:
             openai.api_key = config.OPENAI_API_KEY
             config.logger.debug(f"Prompt: {user_prompt}")
             full_prompt = self._generate_prompt(user_prompt)
 
-            if show_prompt:
-                config.logger.debug(full_prompt)
+            config.logger.debug(full_prompt)
 
             messages = [{"role": "user", "content": full_prompt}]
             response = openai.ChatCompletion.create(
@@ -43,7 +40,6 @@ class Prompter:
         prompt = "Your job is to classify the text separated by ||."
         prompt += "Here are some of examples of expected responses:\n"
         example_number = 1
-        cmd: BaseCommand
         for cmd_name, cmd in self.commands.items():
             for ex in cmd.examples():
                 prompt += f"\nExample {example_number}:\n"
