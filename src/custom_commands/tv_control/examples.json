@@ -1,14 +1,22 @@
 [
   {
     "user_input": "turn on the tv",
-    "keywords": ["ON"]
+    "action": "on",
+    "entity": null
   },
   {
     "user_input": "turn the volume on the tv up",
-    "keywords": ["volume", "up"]
+    "action": "volume",
+    "entity": "up"
   },
   {
-    "user_input": "set the television to mute",
-    "keywords": ["mute"]
+    "user_input": "turn the volume on the tv up",
+    "action": "volume",
+    "entity": "mute"
+  },
+  {
+    "user_input": "i want to watch netflix on the tv",
+    "action": "app",
+    "entity": "netflix"
   }
 ]

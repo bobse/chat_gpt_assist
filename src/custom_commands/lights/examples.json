@@ -1,10 +1,12 @@
 [
   {
     "user_input": "turn off dinning room lights",
-    "keywords": ["OFF", "dinning_room"]
+    "action": "off",
+    "entity": "dinning_room"
   },
   {
-    "user_input": "Studio lights on",
-    "keywords": ["ON", "studio"]
+    "user_input": "studio lights on",
+    "action": "off",
+    "entity": "studio_lights"
   }
 ]

@@ -1,7 +1,8 @@
 from abc import ABC, abstractmethod
 
 
-class InputInterface(ABC):
+class ModelInterface(ABC):
     @abstractmethod
-    def get_input(self) -> str:
+    @staticmethod
+    def process() -> str:
         raise NotImplementedError()
