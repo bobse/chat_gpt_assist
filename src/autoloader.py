@@ -43,5 +43,5 @@ class AutoLoader:
                 return None
             return class_
         except Exception as e:
-            config.logger.debug(e)
+            config.logger.error(e)
             return None

@@ -6,6 +6,8 @@ import inspect
 from config import config
 from pydantic import BaseModel, ValidationError
 
+from exceptions.invalid_model_response import InvalidModelResponse
+
 
 class BaseCommand(ABC):
     @classmethod
@@ -20,7 +22,7 @@ class BaseCommand(ABC):
                         validated_example["command"] = cls.command_name()
                         examples.append(validated_example)
         except ValidationError as e:
-            config.logger.info(
+            config.logger.error(
                 f"Mal formatted example: {json.dumps(example_dict, indent=2)}"
             )
             config.logger.info(str(e))
@@ -45,7 +47,10 @@ class BaseCommand(ABC):
         # if type(model_response) is str:
         #     parsed_response = validator_class.parse_raw(model_response)
         if type(model_response) is dict:
-            parsed_response = validator_class(**model_response)
+            try:
+                parsed_response = validator_class(**model_response)
+            except Exception as e:
+                raise InvalidModelResponse(str(e))
         else:
             raise TypeError("Parameter should be dict")
 
