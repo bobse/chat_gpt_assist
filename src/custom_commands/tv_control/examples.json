@@ -10,7 +10,7 @@
     "entity": "up"
   },
   {
-    "user_input": "turn the volume on the tv up",
+    "user_input": "mute the television",
     "action": "volume",
     "entity": "mute"
   },

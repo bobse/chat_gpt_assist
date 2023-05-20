@@ -23,19 +23,20 @@ class BaseCommand(ABC):
             config.logger.info(
                 f"Mal formatted example: {json.dumps(example_dict, indent=2)}"
             )
-            config.logger.info(e)
+            config.logger.info(str(e))
         except Exception as e:
-            config.logger.error(e)
+            config.logger.error(f"Error loading example from {cls.command_name()}")
+            config.logger.error(str(e))
 
         return examples
 
     @classmethod
     def command_name(cls) -> str:
-        return cls.__module__.replace(".py", "")
+        return cls.__module__.split(".")[-1]
 
+    @classmethod
     @abstractmethod
-    @staticmethod
-    def execute(model_response: str) -> str | None:
+    def execute(model_response: dict) -> str | None:
         raise NotImplementedError()
 
     @classmethod
@@ -44,21 +45,23 @@ class BaseCommand(ABC):
         # if type(model_response) is str:
         #     parsed_response = validator_class.parse_raw(model_response)
         if type(model_response) is dict:
-            parsed_response = validator_class(model_response)
+            parsed_response = validator_class(**model_response)
         else:
-            raise TypeError("Parameter should be dict or str")
+            raise TypeError("Parameter should be dict")
 
         return parsed_response.dict()
 
     @classmethod
     def __load_validator(cls) -> BaseModel:
+        # base_module_path = ".".join(cls.command_name().split(".")[:-1])
+
         module = importlib.import_module(
-            f"custom_commands.{cls.command_name}.response", None
+            f"{config.CUSTOM_CMD_FOLDER}.{cls.command_name()}.response", None
         )
         validator_class = getattr(module, "Response")
-
         if not issubclass(validator_class, BaseModel):
             raise TypeError(
                 "Validation file must contain a Response object from Pydantic's BaseModel"
             )
+
         return validator_class

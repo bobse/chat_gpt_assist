@@ -16,6 +16,7 @@ class AutoLoader:
             if class_:
                 commands[cmd] = class_
 
+        config.logger.debug(f"Available commands: {list(commands.keys())}")
         return commands
 
     @classmethod

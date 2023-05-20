@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 
 
 class ModelInterface(ABC):
-    @abstractmethod
     @staticmethod
-    def process() -> str:
+    @abstractmethod
+    def process(model_prompt: str) -> str:
         raise NotImplementedError()

@@ -2,5 +2,5 @@ from input.input_interface import InputInterface
 
 
 class InputAudio(InputInterface):
-    def user_prompt(self) -> str:
+    def get_input(self) -> str:
         raise NotImplementedError()
