@@ -30,7 +30,7 @@ class Assistant:
                 if user_query.lower() == "quit":
                     config.logger.info("Exiting assistant...")
                     break
-
+                config.logger.info(f"Input: {user_query}")
                 model_response = self.model.process(self.prompt.generate(user_query))
                 json_response = json.loads(model_response)
                 command_key = json_response.get("command")
