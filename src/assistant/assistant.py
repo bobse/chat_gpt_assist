@@ -1,10 +1,3 @@
-# this file has the basic assistant
-
-# 1. autoload commands
-# 1.5 generate examples
-# 2. creates prompt
-# 3.
-
 import json
 from autoloader import AutoLoader
 from exceptions.command_not_found import CommandNotFound
@@ -34,8 +27,9 @@ class Assistant:
             try:
                 user_query = self.input.get_input()
 
-                if user_query.lower == "quit":
-                    break
+                if user_query.lower() == "quit":
+                    config.logger.info("Exiting assistant...")
+                    exit(0)
 
                 model_response = self.model.process(self.prompt.generate(user_query))
                 json_response = json.loads(model_response)
