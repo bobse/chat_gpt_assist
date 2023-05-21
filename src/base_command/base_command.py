@@ -25,10 +25,10 @@ class BaseCommand(ABC):
             config.logger.error(
                 f"Mal formatted example: {json.dumps(example_dict, indent=2)}"
             )
-            config.logger.info(str(e))
+            config.logger.info(e)
         except Exception as e:
             config.logger.error(f"Error loading example from {cls.command_name()}")
-            config.logger.error(str(e))
+            config.logger.error(e)
 
         return examples
 
@@ -50,7 +50,7 @@ class BaseCommand(ABC):
             try:
                 parsed_response = validator_class(**model_response)
             except Exception as e:
-                raise InvalidModelResponse(str(e))
+                raise InvalidModelResponse(e)
         else:
             raise TypeError("Parameter should be dict")
 

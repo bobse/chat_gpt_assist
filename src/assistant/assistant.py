@@ -1,4 +1,5 @@
 import json
+import traceback
 from autoloader import AutoLoader
 from exceptions.unknown_command import UnknownCommand
 from exceptions.invalid_model_response import InvalidModelResponse
@@ -53,12 +54,12 @@ class Assistant:
                 self.output.execute("I can't find this command. Please try again.")
 
             except InvalidModelResponse as e:
-                config.logger.error(str(e))
+                config.logger.error(e)
                 config.logger.error(f"Model responded with: {model_response}")
 
             except Exception as e:
                 config.logger.error("Unknown error:")
-                config.logger.error(e)
+                config.logger.error(traceback.format_exc(e))
 
     def generate_prompt(self) -> Prompt:
         input_variables = {

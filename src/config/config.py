@@ -11,7 +11,6 @@ CUSTOM_CMD_FOLDER = os.getenv("CUSTOM_CMD_FOLDER", "custom_commands")
 TEMP_AUDIO_FOLDER = pathlib.Path("./temp/audios").resolve()
 TEMP_AUDIO_FILE = os.path.join(TEMP_AUDIO_FOLDER, "temp.wav")
 
-
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 if not OPENAI_API_KEY:
     raise ValueError("You must specify an OpenAI API key")
