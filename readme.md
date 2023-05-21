@@ -8,11 +8,6 @@ This base system comes with some examples for commands that you can implement: `
 
 Browse these folders and files to get a better understanding of how to implement your own commands.
 
-### Input/Output
-
-- Input: Currently there are two options for command inputing. Text or Audio.
-- Output: Audio or Text
-
 ## Installation
 
 - Clone this repository into your local computer
@@ -26,6 +21,14 @@ Browse these folders and files to get a better understanding of how to implement
 ## Using the assistant
 
 - Run `python main.py`
+
+<br />
+
+## Changing Input or Output
+
+- Input: Currently there are two options for command inputing. Text or Audio.
+- Output: Audio or Text
+- Running in text mode: `python main.py --input text`
 
 <br />
 
