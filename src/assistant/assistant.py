@@ -80,6 +80,7 @@ class Assistant:
         }
         return Prompt(self.get_base_prompt_text(), input_variables)
 
+    # TODO: Create embeddings for the examples and load them accordinly to user input
     def get_examples(self) -> list[str]:
         examples = []
         for cmd in self.commands.values():
