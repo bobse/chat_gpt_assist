@@ -13,7 +13,7 @@ class InputAudio(InputInterface):
         self.transcriber = transcriber
 
     def get_input(self) -> str:
-        logger.info("Press any key to record your command")
+        logger.info("Press any key to record your command or Ctrl-C to exit")
         input()
         filename = self.listener.listen()
         logger.debug(f"Audio file saved as: {filename}")

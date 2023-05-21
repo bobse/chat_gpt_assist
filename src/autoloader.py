@@ -6,7 +6,7 @@ from config import config
 
 
 class AutoLoader:
-    COMMAND_FOLDER = f"{os.path.dirname(__file__)}/{config.CUSTOM_CMD_FOLDER}"
+    COMMAND_FOLDER = config.CUSTOM_CMD_FOLDER_PATH
 
     @classmethod
     def load_commands(cls) -> dict[str, BaseCommand]:
@@ -29,7 +29,7 @@ class AutoLoader:
 
     @staticmethod
     def camel_case_transform(command: str) -> str:
-        return "".join([w[0].upper() + w[1:] for w in command.split("_")])
+        return "".join([w[0].upper() + w[1:] for w in command.lower().split("_")])
 
     @classmethod
     def load_module(cls, module_name) -> BaseCommand | None:

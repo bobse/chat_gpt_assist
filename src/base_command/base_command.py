@@ -3,10 +3,13 @@ import importlib
 import json
 import os
 import inspect
+from typing import Type
 from config import config
-from pydantic import BaseModel, ValidationError
+from pydantic import BaseModel
 
 from exceptions.invalid_model_response import InvalidModelResponse
+from input.input_interface import InputInterface
+from model.model_interface import ModelInterface
 
 
 class BaseCommand(ABC):
@@ -18,16 +21,13 @@ class BaseCommand(ABC):
             if os.path.exists(filename):
                 with open(filename, "r") as file:
                     for example_dict in json.load(file):
-                        validated_example = cls.parse_validate_response(example_dict)
+                        validated_example = cls.parse_validate_response(
+                            example_dict
+                        ).dict()
                         validated_example["command"] = cls.command_name()
                         examples.append(validated_example)
-        except ValidationError as e:
-            config.logger.error(
-                f"Mal formatted example: {json.dumps(example_dict, indent=2)}"
-            )
-            config.logger.info(e)
         except Exception as e:
-            config.logger.error(f"Error loading example from {cls.command_name()}")
+            config.logger.error(f"Error loading example from {cls.command_name()}.py")
             config.logger.error(e)
 
         return examples
@@ -38,14 +38,15 @@ class BaseCommand(ABC):
 
     @classmethod
     @abstractmethod
-    def execute(model_response: dict) -> str | None:
+    def execute(
+        cls, model_response: dict, input: InputInterface, model: Type[ModelInterface]
+    ) -> str | None:
         raise NotImplementedError()
 
     @classmethod
-    def parse_validate_response(cls, model_response: dict) -> dict:
+    def parse_validate_response(cls, model_response: dict) -> BaseModel:
         validator_class = cls.__load_validator()
-        # if type(model_response) is str:
-        #     parsed_response = validator_class.parse_raw(model_response)
+
         if type(model_response) is dict:
             try:
                 parsed_response = validator_class(**model_response)
@@ -54,7 +55,7 @@ class BaseCommand(ABC):
         else:
             raise TypeError("Parameter should be dict")
 
-        return parsed_response.dict()
+        return parsed_response
 
     @classmethod
     def __load_validator(cls) -> BaseModel:

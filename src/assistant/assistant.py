@@ -47,9 +47,17 @@ class Assistant:
 
                 config.logger.debug(json_response)
 
-                self.output.execute(self.commands[command_key].execute(json_response))
+                execution_response = self.commands[command_key].execute(
+                    json_response, self.input, self.model
+                )
+
+                self.output.execute(execution_response)
 
             # TODO: If necessary, maybe add retry here with reinforcing adding the response into the prompt
+            except KeyboardInterrupt:
+                config.logger.info("Exiting...")
+                break
+
             except json.JSONDecodeError:
                 config.logger.error("Invalid Json response from model")
                 config.logger.error(f"Model responded with: {model_response}")

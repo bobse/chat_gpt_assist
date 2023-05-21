@@ -1,15 +1,17 @@
 import os
 from dotenv import load_dotenv
 import logging
-import pathlib
+from pathlib import Path
 
 from config.logger_format import CustomLogFormatter
 
 _ = load_dotenv()
 
+BASE_PATH = Path(".").parent.absolute()
 CUSTOM_CMD_FOLDER = os.getenv("CUSTOM_CMD_FOLDER", "custom_commands")
-TEMP_AUDIO_FOLDER = pathlib.Path("./temp/audios").resolve()
-TEMP_AUDIO_FILE = os.path.join(TEMP_AUDIO_FOLDER, "temp.wav")
+CUSTOM_CMD_FOLDER_PATH = Path(BASE_PATH, "src", CUSTOM_CMD_FOLDER)
+TEMP_AUDIO_FOLDER = Path(BASE_PATH, "temp/audios")
+TEMP_AUDIO_FILE = Path(TEMP_AUDIO_FOLDER, "temp.wav")
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 if not OPENAI_API_KEY:

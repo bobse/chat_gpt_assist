@@ -15,7 +15,7 @@ SILENCE_LIMIT = 2
 
 class ListenerPyAudio(ListenerInterface):
     @staticmethod
-    def listen(filename: str = config.TEMP_AUDIO_FILE) -> str:
+    def listen(filename: str = str(config.TEMP_AUDIO_FILE)) -> str:
         ListenerPyAudio._save_audio(filename, ListenerPyAudio._record_audio())
         return filename
 
