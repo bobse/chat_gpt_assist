@@ -1,5 +1,6 @@
 import json
 import traceback
+from typing import Type
 from autoloader import AutoLoader
 from exceptions.unknown_command import UnknownCommand
 from exceptions.invalid_model_response import InvalidModelResponse
@@ -13,7 +14,10 @@ from prompt.prompt import Prompt
 
 class Assistant:
     def __init__(
-        self, input: InputInterface, output: OutputInterface, model: ModelInterface
+        self,
+        input: InputInterface,
+        output: OutputInterface,
+        model: Type[ModelInterface],
     ) -> None:
         self.input = input
         self.output = output

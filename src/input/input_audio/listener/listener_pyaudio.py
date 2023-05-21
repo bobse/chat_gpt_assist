@@ -15,9 +15,9 @@ SILENCE_LIMIT = 2
 
 class ListenerPyAudio(ListenerInterface):
     @staticmethod
-    def listen() -> str:
-        ListenerPyAudio._save_audio(ListenerPyAudio._record_audio())
-        return config.TEMP_AUDIO_FILE
+    def listen(filename: str = config.TEMP_AUDIO_FILE) -> str:
+        ListenerPyAudio._save_audio(filename, ListenerPyAudio._record_audio())
+        return filename
 
     @staticmethod
     def _record_audio() -> list[bytes]:
@@ -60,8 +60,8 @@ class ListenerPyAudio(ListenerInterface):
         return frames
 
     @staticmethod
-    def _save_audio(audio_bytes: list[bytes]) -> None:
-        with wave.open(config.TEMP_AUDIO_FILE, "wb") as wf:
+    def _save_audio(filename: str, audio_bytes: list[bytes]) -> None:
+        with wave.open(filename, "wb") as wf:
             wf.setnchannels(1)
             wf.setsampwidth(pyaudio.PyAudio().get_sample_size(pyaudio.paInt16))
             wf.setframerate(FRAMERATE)

@@ -5,7 +5,7 @@ from config import config
 openai.api_key = config.OPENAI_API_KEY
 
 
-class OpenAiTranscriber(TranscriberInterface):
+class TranscriberOpenAi(TranscriberInterface):
     @staticmethod
     def transcribe(audio_filename) -> str:
         audio_file = open(audio_filename, "rb")
