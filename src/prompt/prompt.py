@@ -7,14 +7,13 @@ class Prompt:
     ) -> None:
         self.base_text = base_text
         self.check_query_placeholder()
-
         self.input_variables = input_variables
 
     def generate(self, user_query) -> str:
         generated_prompt = self.base_text.replace("{query}", user_query)
         if self.input_variables:
             for key, value in self.input_variables.items():
-                if type(value) is list:
+                if isinstance(value, list):
                     value = "\n ".join(value)
 
                 generated_prompt = generated_prompt.replace("{" + key + "}", value)

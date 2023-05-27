@@ -9,5 +9,9 @@ class TranscriberOpenAi(TranscriberInterface):
     @staticmethod
     def transcribe(audio_filename) -> str:
         audio_file = open(audio_filename, "rb")
-        transcript = openai.Audio.transcribe("whisper-1", audio_file)
+        transcript = openai.Audio.transcribe(
+            "whisper-1",
+            audio_file,
+            language=config.LANGUAGE,
+        )
         return transcript["text"]

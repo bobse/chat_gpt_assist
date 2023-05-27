@@ -18,6 +18,6 @@ class OpenAiModel(ModelInterface):
             )
             config.logger.debug(response)
             return response.choices[0].message["content"]
-        except Exception as e:
-            config.logger.error(e)
-            raise ModelError(e)
+        except Exception as ex:
+            config.logger.error(ex)
+            raise ModelError(ex) from ex

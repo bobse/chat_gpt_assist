@@ -21,9 +21,7 @@ class ListenerPyAudio(ListenerInterface):
 
     @staticmethod
     def _record_audio() -> list[bytes]:
-        # Set up the audio stream
         p = pyaudio.PyAudio()
-        # Initialize variables
         frames: list[bytes] = []
 
         stream = p.open(
@@ -50,9 +48,6 @@ class ListenerPyAudio(ListenerInterface):
             ):
                 config.logger.info("Silence detected. Stopping recording.")
                 break
-
-            if len(frames) % CHUNK_PER_SEC == 0:
-                config.logger.info(".")
 
         stream.stop_stream()
         stream.close()

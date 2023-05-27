@@ -17,6 +17,10 @@ OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 if not OPENAI_API_KEY:
     raise ValueError("You must specify an OpenAI API key")
 
+PORCUPINE_KEY = os.getenv("PORCUPINE_KEY")
+
+LANGUAGE = os.getenv("LANGUAGE", "en")
+
 logger = logging.getLogger("main_logger")
 logger.setLevel(os.getenv("LOG_LEVEL", "INFO"))
 # handler = logging.FileHandler('info.log')

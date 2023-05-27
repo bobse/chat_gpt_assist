@@ -5,6 +5,11 @@
     "entity": null
   },
   {
+    "user_input": "turn off the tv",
+    "action": "off",
+    "entity": null
+  },
+  {
     "user_input": "turn the volume on the tv up",
     "action": "volume",
     "entity": "up"

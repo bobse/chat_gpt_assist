@@ -1,15 +1,20 @@
+from __future__ import annotations
 from abc import ABC, abstractmethod
+from pydantic import BaseModel
+
 import importlib
 import json
 import os
 import inspect
-from typing import Type
 from config import config
-from pydantic import BaseModel
+
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from assistant.assistant import Assistant
+
 
 from exceptions.invalid_model_response import InvalidModelResponse
-from input.input_interface import InputInterface
-from model.model_interface import ModelInterface
 
 
 class BaseCommand(ABC):
@@ -38,9 +43,7 @@ class BaseCommand(ABC):
 
     @classmethod
     @abstractmethod
-    def execute(
-        cls, model_response: dict, input: InputInterface, model: Type[ModelInterface]
-    ) -> str | None:
+    def execute(cls, model_response: dict, assistant: Assistant) -> str | None:
         raise NotImplementedError()
 
     @classmethod
@@ -50,8 +53,8 @@ class BaseCommand(ABC):
         if type(model_response) is dict:
             try:
                 parsed_response = validator_class(**model_response)
-            except Exception as e:
-                raise InvalidModelResponse(e)
+            except Exception:
+                raise InvalidModelResponse(model_response)
         else:
             raise TypeError("Parameter should be dict")
 
