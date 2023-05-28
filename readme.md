@@ -1,4 +1,4 @@
-# LLM Assistant
+# LLM Assistant: WIP
 
 This is a open-source assistant that uses LLMs to power it's decisions through prompts and json responses.
 
