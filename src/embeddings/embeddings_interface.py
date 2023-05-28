@@ -15,4 +15,5 @@ class EmbeddingsInterface(ABC):
         raise NotImplementedError()
 
     @abstractmethod
-    def empty(self)->None:
+    def empty(self) -> None:
+        raise NotImplementedError()
