@@ -9,7 +9,6 @@ from input.input_interface import InputInterface
 from model.model_interface import ModelInterface
 from output.output_interface import OutputInterface
 from config import config
-from output.output_response import OutputResponse
 from prompt.prompt import Prompt
 
 
@@ -27,20 +26,27 @@ class Assistant:
         self.prompt = self._generate_prompt()
         config.logger.debug("Example Prompt:")
         config.logger.debug(self.prompt.generate("example prompt"))
+        self.cmd_cache = {}
 
     def loop(self) -> None:
         while True:
             try:
-                cmd_key, json_response = self._pipe(
-                    None,
-                    [
-                        self._process_input,
-                        self.prompt.generate,
-                        self.model.process,
-                        self._process_model_response,
-                    ],
-                )
+                user_input = self._process_input()
 
+                if self._is_response_in_cache(input):
+                    json_response = self.cmd_cache[user_input]
+                    config.logger.debug("Using cached command")
+                else:
+                    json_response = self._pipe(
+                        user_input,
+                        [
+                            self.prompt.generate,
+                            self.model.process,
+                            self._process_model_response,
+                        ],
+                    )
+
+                cmd_key = json_response["command"]
                 command_response = self.commands[cmd_key].execute(json_response, self)
                 self.output.execute(command_response)
 
@@ -86,7 +92,14 @@ class Assistant:
 
         return user_query
 
-    def _process_model_response(self, model_response: str) -> tuple[str, dict]:
+    def _generate_prompt(self) -> Prompt:
+        input_variables = {
+            "examples": self._get_examples(),
+            "commands": ", ".join(self.commands.keys()),
+        }
+        return Prompt(self._get_base_prompt_text(), input_variables)
+
+    def _process_model_response(self, model_response: str) -> dict:
         json_response = json.loads(model_response)
         command_key = json_response.get("command")
 
@@ -96,14 +109,17 @@ class Assistant:
             raise UnknownCommand(command_key)
 
         config.logger.debug(json_response)
-        return command_key, json_response
+        self._cache_model_response(json_response)
+        return json_response
 
-    def _generate_prompt(self) -> Prompt:
-        input_variables = {
-            "examples": self._get_examples(),
-            "commands": ", ".join(self.commands.keys()),
-        }
-        return Prompt(self._get_base_prompt_text(), input_variables)
+    def _is_response_in_cache(self, user_input: str) -> bool:
+        return self.cmd_cache.get(user_input) is not None
+
+    def _cache_model_response(self, json_response: dict) -> None:
+        prepared_input = (
+            json_response.get("user_input").lower().replace(" ", "").replace(".", "")
+        )
+        self.cmd_cache[prepared_input] = json_response
 
     # TODO: Create embeddings for the examples and load them accordinly to user input
     def _get_examples(self) -> list[str]:
