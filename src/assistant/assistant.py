@@ -33,8 +33,9 @@ class Assistant:
             try:
                 user_input = self._process_input()
 
-                if self._is_response_in_cache(input):
-                    json_response = self.cmd_cache[user_input]
+                if self._is_response_in_cache(user_input):
+                    input_key = self._clean_input(user_input)
+                    json_response = self.cmd_cache[input_key]
                     config.logger.debug("Using cached command")
                 else:
                     json_response = self._pipe(
@@ -113,13 +114,15 @@ class Assistant:
         return json_response
 
     def _is_response_in_cache(self, user_input: str) -> bool:
-        return self.cmd_cache.get(user_input) is not None
+        key = self._clean_input(user_input)
+        return self.cmd_cache.get(key) is not None
 
     def _cache_model_response(self, json_response: dict) -> None:
-        prepared_input = (
-            json_response.get("user_input").lower().replace(" ", "").replace(".", "")
-        )
+        prepared_input = self._clean_input(json_response["user_input"])
         self.cmd_cache[prepared_input] = json_response
+
+    def _clean_input(self, user_input: str) -> str:
+        return user_input.lower().replace(" ", "").replace(".", "")
 
     # TODO: Create embeddings for the examples and load them accordinly to user input
     def _get_examples(self) -> list[str]:
