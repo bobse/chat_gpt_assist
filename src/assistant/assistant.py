@@ -2,6 +2,7 @@ import json
 import traceback
 from typing import Type
 from autoloader import AutoLoader
+from embeddings.embeddings_interface import EmbeddingsInterface
 from exceptions.unknown_command import UnknownCommand
 from exceptions.invalid_model_response import InvalidModelResponse
 from exceptions.model_response_without_command import ModelResponseWithoutCommand
@@ -18,30 +19,28 @@ class Assistant:
         input: InputInterface,
         output: OutputInterface,
         model: Type[ModelInterface],
+        embeddings: EmbeddingsInterface,
     ) -> None:
         self.input = input
         self.output = output
         self.model = model
         self.commands = AutoLoader.load_commands()
-        self.prompt = self._create_prompt_with_examples()
-        config.logger.debug("Example Prompt:")
-        config.logger.debug(self.prompt.generate("example prompt"))
-        self.cmd_cache = {}
+        self.embeddings = embeddings
+        if self.embeddings.empty():
+            self._insert_examples_into_table()
 
     def loop(self) -> None:
         while True:
             try:
                 user_input = self._process_input()
+                json_response = self._check_cmd_cache(user_input)
 
-                if self._is_response_in_cache(user_input):
-                    input_key = self._input_to_key_format(user_input)
-                    json_response = self.cmd_cache[input_key]
-                    config.logger.debug("Using cached command")
-                else:
+                if json_response is None:
+                    config.logger.debug("No command in cache. Starting pipeline...")
                     json_response = self._pipe(
                         user_input,
                         [
-                            self.prompt.generate,
+                            self._create_prompt_with_examples,
                             self.model.process,
                             self._process_model_response,
                         ],
@@ -49,7 +48,9 @@ class Assistant:
 
                 cmd_key = json_response["command"]
                 command_response = self.commands[cmd_key].execute(json_response, self)
+
                 self.output.execute(command_response)
+                self._cache_model_response(json_response)
 
             # TODO: If necessary, maybe add retry here with reinforcing adding the response into the prompt
             except KeyboardInterrupt:
@@ -93,13 +94,6 @@ class Assistant:
 
         return user_query
 
-    def _create_prompt_with_examples(self) -> Prompt:
-        input_variables = {
-            "examples": self._get_examples(),
-            "commands": ", ".join(self.commands.keys()),
-        }
-        return Prompt(self._get_base_prompt_text(), input_variables)
-
     def _process_model_response(self, model_response: str) -> dict:
         json_response = json.loads(model_response)
         command_key = json_response.get("command")
@@ -110,29 +104,20 @@ class Assistant:
             raise UnknownCommand(command_key)
 
         config.logger.debug(json_response)
-        self._cache_model_response(json_response)
         return json_response
 
-    def _is_response_in_cache(self, user_input: str) -> bool:
-        key = self._input_to_key_format(user_input)
-        return self.cmd_cache.get(key) is not None
+    def _check_cmd_cache(self, user_input: str) -> None | dict:
+        similar_queries = self.embeddings.get_similar(user_input, 1)
+
+        if similar_queries[0]["score"] > 90:
+            return None
+        return similar_queries[0]["data"]
 
     def _cache_model_response(self, json_response: dict) -> None:
-        prepared_input = self._input_to_key_format(json_response["user_input"])
-        self.cmd_cache[prepared_input] = json_response
+        self.embeddings.insert_into_db(json_response)
 
     def _input_to_key_format(self, user_input: str) -> str:
         return user_input.lower().replace(" ", "").replace(".", "")
-
-    # TODO: Create embeddings for the examples and load them accordinly to user input
-    def _get_examples(self) -> list[str]:
-        examples = []
-        for cmd in self.commands.values():
-            for ex in cmd.examples():
-                examples.append(
-                    f"Example {len(examples)+1}: {json.dumps(ex, indent=4)}"
-                )
-        return examples
 
     def _get_base_prompt_text(self) -> str:
         prompt = "Your job is to classify the text separated by ||."
@@ -144,3 +129,30 @@ class Assistant:
         prompt += "Here's  a list of allowed commands: {commands} \n"
         prompt += "\nANSWERS CAN ONLY BE IN JSON FORMAT.  || {query} ||"
         return prompt
+
+    def _create_prompt_with_examples(self, user_query: str) -> Prompt:
+        input_variables = {
+            "examples": self._get_examples(user_query),
+            "commands": ", ".join(self.commands.keys()),
+        }
+        full_prompt = Prompt(self._get_base_prompt_text(), input_variables).generate(
+            user_query
+        )
+        config.logger.debug(f"Final Prompt: {full_prompt}")
+        return full_prompt
+
+    def _get_examples(self, user_query: str) -> list[str]:
+        examples = []
+        similar_examples = self.embeddings.get_similar(user_query, 10)
+
+        for ex in similar_examples:
+            examples.append(
+                f"Example {len(examples)+1}: {json.dumps(ex['data'], indent=4)}"
+            )
+        return examples
+
+    def _insert_examples_into_table(self) -> None:
+        config.logger.debug("Recreating embeddings for commands/examples...")
+        for cmd in self.commands.values():
+            for ex in cmd.examples():
+                self.embeddings.insert_into_db(ex)

@@ -1,12 +1,12 @@
 [
   {
-    "user_input": "turn off dinning room lights",
+    "user_input": "turn off dining room lights",
     "action": "off",
-    "entity": "dinning_room"
+    "entity": "dining_room"
   },
   {
     "user_input": "studio lights on",
-    "action": "off",
+    "action": "on",
     "entity": "studio_lights"
   }
 ]
