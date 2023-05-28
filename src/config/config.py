@@ -12,6 +12,8 @@ CUSTOM_CMD_FOLDER = os.getenv("CUSTOM_CMD_FOLDER", "custom_commands")
 CUSTOM_CMD_FOLDER_PATH = Path(BASE_PATH, "src", CUSTOM_CMD_FOLDER)
 TEMP_AUDIO_FOLDER = Path(BASE_PATH, "temp/audios")
 TEMP_AUDIO_FILE = Path(TEMP_AUDIO_FOLDER, "temp.wav")
+ERROR_SOUND = str(Path(BASE_PATH, "assets", "audio", "dong.wav"))
+SUCCESS_SOUND = str(Path(BASE_PATH, "assets", "audio", "ding.wav"))
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 if not OPENAI_API_KEY:

@@ -3,6 +3,7 @@ import pvporcupine
 import pyaudio
 
 from config import config
+from helpers.audio_helpers import play_file
 
 from input.input_audio.wakeword.hotword_interface import HotwordInterface
 
@@ -39,3 +40,7 @@ class HotwordPorcupine(HotwordInterface):
         stream.stop_stream()
         stream.close()
         p_audio.terminate()
+        self._play_file(config.SUCCESS_SOUND)
+
+    def _play_file(self, filename) -> None:
+        play_file(filename)

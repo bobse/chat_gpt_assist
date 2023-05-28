@@ -1,5 +1,12 @@
 from __future__ import annotations
 from abc import ABC, abstractmethod
+from typing import TYPE_CHECKING
+
+from output.output_response import OutputResponse
+
+if TYPE_CHECKING:
+    from assistant.assistant import Assistant
+
 from pydantic import BaseModel
 
 import importlib
@@ -7,13 +14,6 @@ import json
 import os
 import inspect
 from config import config
-
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from assistant.assistant import Assistant
-
-
 from exceptions.invalid_model_response import InvalidModelResponse
 
 
@@ -31,9 +31,9 @@ class BaseCommand(ABC):
                         ).dict()
                         validated_example["command"] = cls.command_name()
                         examples.append(validated_example)
-        except Exception as e:
+        except Exception as ex:
             config.logger.error(f"Error loading example from {cls.command_name()}.py")
-            config.logger.error(e)
+            config.logger.error(ex)
 
         return examples
 
@@ -43,18 +43,18 @@ class BaseCommand(ABC):
 
     @classmethod
     @abstractmethod
-    def execute(cls, model_response: dict, assistant: Assistant) -> str | None:
+    def execute(cls, model_response: dict, assistant: Assistant) -> OutputResponse:
         raise NotImplementedError()
 
     @classmethod
     def parse_validate_response(cls, model_response: dict) -> BaseModel:
         validator_class = cls.__load_validator()
 
-        if type(model_response) is dict:
+        if isinstance(model_response, dict):
             try:
                 parsed_response = validator_class(**model_response)
-            except Exception:
-                raise InvalidModelResponse(model_response)
+            except Exception as ex:
+                raise InvalidModelResponse(model_response) from ex
         else:
             raise TypeError("Parameter should be dict")
 

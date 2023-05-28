@@ -5,6 +5,8 @@ from input.input_audio.transcriber.transcriber_openai import TranscriberOpenAi
 from input.input_audio.wakeword.hotword_porcupine import HotwordPorcupine
 from input.input_text.input_text import InputText
 from input.input_audio.input_audio import InputAudio
+from output.output_audio.output_audio import OutputAudio
+from output.output_audio.tts.tts_google import TTSGoogle
 from output.output_text.output_text import OutputText
 from assistant.assistant import Assistant
 from model.openai.model import OpenAiModel
@@ -13,7 +15,7 @@ INPUTS = {
     "text": InputText(),
     "audio": InputAudio(ListenerPyAudio, TranscriberOpenAi, HotwordPorcupine()),
 }
-OUTPUTS = {"text": OutputText()}
+OUTPUTS = {"text": OutputText(), "audio": OutputAudio(TTSGoogle)}
 
 parser = argparse.ArgumentParser(
     prog="LLM Assistant",
@@ -34,9 +36,9 @@ parser.add_argument(
     dest="output",
     action="store",
     type=str,
-    default="text",
-    choices=["text"],
-    help="Set the output. Default: text",
+    default="audio",
+    choices=["audio", "text"],
+    help="Set the output. Default: audio",
 )
 
 if __name__ == "__main__":

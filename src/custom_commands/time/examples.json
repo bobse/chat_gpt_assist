@@ -1,0 +1,12 @@
+[
+  {
+    "user_input": "what time is it",
+    "action": "time",
+    "entity": null
+  },
+  {
+    "user_input": "what time is it in New york",
+    "action": "time",
+    "entity": "new_york"
+  }
+]

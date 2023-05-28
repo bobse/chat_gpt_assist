@@ -9,6 +9,7 @@ from input.input_interface import InputInterface
 from model.model_interface import ModelInterface
 from output.output_interface import OutputInterface
 from config import config
+from output.output_response import OutputResponse
 from prompt.prompt import Prompt
 
 
@@ -51,17 +52,20 @@ class Assistant:
             except json.JSONDecodeError as ex:
                 config.logger.error("Invalid Json response from model")
                 config.logger.error(f"Model responded with: {ex.doc}")
+                self.output.fail()
 
             except (ModelResponseWithoutCommand, UnknownCommand):
-                self.output.execute("I can't find this command. Please try again.")
+                self.output.fail()
 
             except InvalidModelResponse as ex:
                 config.logger.error(ex)
                 config.logger.error(f"Model responded with: {ex.model_response}")
+                self.output.fail()
 
             except Exception as ex:
                 config.logger.error("Unknown error:")
                 config.logger.error(traceback.format_exc(ex))
+                self.output.fail()
 
     def _pipe(self, initial_value, funcs):
         if initial_value is None:
