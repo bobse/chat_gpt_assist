@@ -23,7 +23,7 @@ class Assistant:
         self.output = output
         self.model = model
         self.commands = AutoLoader.load_commands()
-        self.prompt = self._generate_prompt()
+        self.prompt = self._create_prompt_with_examples()
         config.logger.debug("Example Prompt:")
         config.logger.debug(self.prompt.generate("example prompt"))
         self.cmd_cache = {}
@@ -34,7 +34,7 @@ class Assistant:
                 user_input = self._process_input()
 
                 if self._is_response_in_cache(user_input):
-                    input_key = self._clean_input(user_input)
+                    input_key = self._input_to_key_format(user_input)
                     json_response = self.cmd_cache[input_key]
                     config.logger.debug("Using cached command")
                 else:
@@ -93,7 +93,7 @@ class Assistant:
 
         return user_query
 
-    def _generate_prompt(self) -> Prompt:
+    def _create_prompt_with_examples(self) -> Prompt:
         input_variables = {
             "examples": self._get_examples(),
             "commands": ", ".join(self.commands.keys()),
@@ -114,14 +114,14 @@ class Assistant:
         return json_response
 
     def _is_response_in_cache(self, user_input: str) -> bool:
-        key = self._clean_input(user_input)
+        key = self._input_to_key_format(user_input)
         return self.cmd_cache.get(key) is not None
 
     def _cache_model_response(self, json_response: dict) -> None:
-        prepared_input = self._clean_input(json_response["user_input"])
+        prepared_input = self._input_to_key_format(json_response["user_input"])
         self.cmd_cache[prepared_input] = json_response
 
-    def _clean_input(self, user_input: str) -> str:
+    def _input_to_key_format(self, user_input: str) -> str:
         return user_input.lower().replace(" ", "").replace(".", "")
 
     # TODO: Create embeddings for the examples and load them accordinly to user input
