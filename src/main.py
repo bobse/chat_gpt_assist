@@ -28,7 +28,6 @@ def reset_db():
 
 if __name__ == "__main__":
     args = CliParser().args()
-    print(args)
     config.logger.info("Starting assistant...")
     if args.refresh_examples:
         config.logger.info("Refreshing Examples Database")
