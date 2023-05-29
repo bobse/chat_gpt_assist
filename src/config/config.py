@@ -1,8 +1,7 @@
 import os
-from dotenv import load_dotenv
 import logging
 from pathlib import Path
-
+from dotenv import load_dotenv
 from config.logger_format import CustomLogFormatter
 
 _ = load_dotenv()

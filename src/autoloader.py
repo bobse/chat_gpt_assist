@@ -24,7 +24,7 @@ class AutoLoader:
         return [
             folder
             for folder in next(os.walk(cls.COMMAND_FOLDER))[1]
-            if folder[0] != "_"
+            if not folder.startswith("_")
         ]
 
     @staticmethod
@@ -35,7 +35,7 @@ class AutoLoader:
     def load_module(cls, module_name) -> BaseCommand | None:
         try:
             module = importlib.import_module(
-                f"custom_commands.{module_name}.{module_name}", None
+                f"{config.CUSTOM_CMD_FOLDER}.{module_name}.{module_name}", None
             )
             class_ = getattr(module, AutoLoader.camel_case_transform(module_name))
 

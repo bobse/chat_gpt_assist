@@ -52,7 +52,6 @@ class Assistant:
                 self.output.execute(command_response)
                 self._cache_model_response(json_response)
 
-            # TODO: If necessary, maybe add retry here with reinforcing adding the response into the prompt
             except KeyboardInterrupt:
                 config.logger.info("Exiting...")
                 break
@@ -63,6 +62,7 @@ class Assistant:
                 self.output.fail()
 
             except (ModelResponseWithoutCommand, UnknownCommand):
+                # TODO: If necessary, maybe add retry here with reinforcing adding the response into the prompt
                 self.output.fail()
 
             except InvalidModelResponse as ex:
@@ -100,6 +100,7 @@ class Assistant:
 
         if not command_key:
             raise ModelResponseWithoutCommand()
+
         if not self.commands.get(command_key):
             raise UnknownCommand(command_key)
 
@@ -108,7 +109,6 @@ class Assistant:
 
     def _check_cmd_cache(self, user_input: str) -> None | dict:
         similar_queries = self.embeddings.get_similar(user_input, 1)
-
         if similar_queries[0]["score"] > 90:
             return None
         return similar_queries[0]["data"]
@@ -116,21 +116,7 @@ class Assistant:
     def _cache_model_response(self, json_response: dict) -> None:
         self.embeddings.insert_into_db(json_response)
 
-    def _input_to_key_format(self, user_input: str) -> str:
-        return user_input.lower().replace(" ", "").replace(".", "")
-
-    def _get_base_prompt_text(self) -> str:
-        prompt = "Your job is to classify the text separated by ||."
-        prompt += "Here are some of examples of expected responses:\n {examples}"
-        prompt += "\n\nYour response must always be in json format in snake case typing and must"
-        prompt += "always contain the following keys 'command', 'keywords'."
-        prompt += "if you can not classify the command or the keywords,"
-        prompt += "the value must be 'unknown'.\n"
-        prompt += "Here's  a list of allowed commands: {commands} \n"
-        prompt += "\nANSWERS CAN ONLY BE IN JSON FORMAT.  || {query} ||"
-        return prompt
-
-    def _create_prompt_with_examples(self, user_query: str) -> Prompt:
+    def _create_prompt_with_examples(self, user_query: str) -> str:
         input_variables = {
             "examples": self._get_examples(user_query),
             "commands": ", ".join(self.commands.keys()),
@@ -150,6 +136,17 @@ class Assistant:
                 f"Example {len(examples)+1}: {json.dumps(ex['data'], indent=4)}"
             )
         return examples
+
+    def _get_base_prompt_text(self) -> str:
+        prompt = "Your job is to classify the text separated by ||."
+        prompt += "Here are some of examples of expected responses:\n {examples}"
+        prompt += "\n\nYour response must always be in json format in snake case typing and must"
+        prompt += "always contain the following keys 'command', 'keywords'."
+        prompt += "if you can not classify the command or the keywords,"
+        prompt += "the value must be 'unknown'.\n"
+        prompt += "Here's  a list of allowed commands: {commands} \n"
+        prompt += "\nANSWERS CAN ONLY BE IN JSON FORMAT.  || {query} ||"
+        return prompt
 
     def _insert_examples_into_table(self) -> None:
         config.logger.debug("Recreating embeddings for commands/examples...")

@@ -1,23 +1,25 @@
 from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING
-
-from output.output_response import OutputResponse
-
-if TYPE_CHECKING:
-    from assistant.assistant import Assistant
-
-from pydantic import BaseModel
-
 import importlib
 import json
 import os
 import inspect
+from pydantic import BaseModel
 from config import config
+from output.output_response import OutputResponse
 from exceptions.invalid_model_response import InvalidModelResponse
+
+if TYPE_CHECKING:
+    from assistant.assistant import Assistant
 
 
 class BaseCommand(ABC):
+    @classmethod
+    @abstractmethod
+    def execute(cls, model_response: dict, assistant: Assistant) -> OutputResponse:
+        raise NotImplementedError()
+
     @classmethod
     def examples(cls) -> list[dict]:
         examples = []
@@ -42,11 +44,6 @@ class BaseCommand(ABC):
         return cls.__module__.split(".")[-1]
 
     @classmethod
-    @abstractmethod
-    def execute(cls, model_response: dict, assistant: Assistant) -> OutputResponse:
-        raise NotImplementedError()
-
-    @classmethod
     def parse_validate_response(cls, model_response: dict) -> BaseModel:
         validator_class = cls.__load_validator()
 
@@ -62,8 +59,6 @@ class BaseCommand(ABC):
 
     @classmethod
     def __load_validator(cls) -> BaseModel:
-        # base_module_path = ".".join(cls.command_name().split(".")[:-1])
-
         module = importlib.import_module(
             f"{config.CUSTOM_CMD_FOLDER}.{cls.command_name()}.response", None
         )

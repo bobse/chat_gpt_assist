@@ -1,6 +1,7 @@
 import argparse
 from pathlib import Path
 import shutil
+from cli_parser import CliParser
 from config import config
 from embeddings.embeddings_local import EmbeddingsLocal
 from input.input_audio.listener.listener_pyaudio import ListenerPyAudio
@@ -20,44 +21,14 @@ INPUTS = {
 }
 OUTPUTS = {"text": OutputText(), "audio": OutputAudio(TTSGoogle)}
 
-parser = argparse.ArgumentParser(
-    prog="LLM Assistant",
-    description="Simple modular assistant",
-)
-parser.add_argument(
-    "--input",
-    dest="input",
-    action="store",
-    type=str,
-    default="audio",
-    choices=["audio", "text"],
-    help="Set the input. Default: audio",
-)
-
-parser.add_argument(
-    "--output",
-    dest="output",
-    action="store",
-    type=str,
-    default="audio",
-    choices=["audio", "text"],
-    help="Set the output. Default: audio",
-)
-
-parser.add_argument(
-    "--refresh_examples",
-    action=argparse.BooleanOptionalAction,
-    dest="refresh_examples",
-    help="Resets the examples embeddings DB",
-)
-
 
 def reset_db():
     shutil.rmtree(Path(config.EMBEDDINGS_DB, "commands.lance"))
 
 
 if __name__ == "__main__":
-    args = parser.parse_args()
+    args = CliParser().args()
+    print(args)
     config.logger.info("Starting assistant...")
     if args.refresh_examples:
         config.logger.info("Refreshing Examples Database")
