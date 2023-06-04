@@ -24,6 +24,18 @@ Browse these folders and files to get a better understanding of how to implement
 
 <br />
 
+## Setup Google TTS
+
+Since there's a generous free limit for google TTS we decided to use this solution as the main one.
+Of course, due to the modular nature of this implementation you can always substitute for a different TTS of your choice.
+Instructions on how to setup Google TTS:
+
+- Follow the first part of this guide: https://cloud.google.com/text-to-speech/docs/before-you-begin?hl=pt-br
+- Save the json file in your folder.
+- Edit the `.env` variable `GOOGLE_APPLICATION_CREDENTIALS` to point to your json file.
+
+<br />
+
 ## Changing Input or Output
 
 - Input: Currently there are two options for command inputing. Text or Audio.

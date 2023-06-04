@@ -27,6 +27,10 @@ PORCUPINE_KEY = os.getenv("PORCUPINE_KEY")
 
 # Language for whisper model
 LANGUAGE = os.getenv("LANGUAGE", "en")
+TTS_LANGUAGE = "en-US"
+
+# Timezone diference from UTC
+TIMEZONE = -3
 
 logger = logging.getLogger("main_logger")
 logger.setLevel(os.getenv("LOG_LEVEL", "INFO"))

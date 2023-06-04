@@ -4,3 +4,4 @@
 __pycache__
 /temp
 /db/*
+google_credentials.json

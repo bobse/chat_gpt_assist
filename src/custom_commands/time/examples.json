@@ -2,11 +2,19 @@
   {
     "user_input": "what time is it",
     "action": "time",
-    "entity": null
+    "entity": null,
+    "timezone": 0
   },
   {
     "user_input": "what time is it in New york",
     "action": "time",
-    "entity": "new_york"
+    "entity": "new_york",
+    "timezone": -4
+  },
+  {
+    "user_input": "what time is it in London",
+    "action": "time",
+    "entity": "london",
+    "timezone": 1
   }
 ]

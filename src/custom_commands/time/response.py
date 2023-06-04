@@ -6,3 +6,4 @@ class Response(BaseModel):
     user_input: str
     action: str
     entity: Optional[str]
+    timezone: Optional[int]
