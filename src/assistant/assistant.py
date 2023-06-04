@@ -36,7 +36,9 @@ class Assistant:
                 json_response = self._check_cmd_cache(user_input)
 
                 if json_response is None:
-                    config.logger.debug("No command in cache. Starting pipeline...")
+                    config.logger.info(
+                        "No command in cache. Starting online pipeline..."
+                    )
                     json_response = self._pipe(
                         user_input,
                         [
