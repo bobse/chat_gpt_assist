@@ -18,6 +18,9 @@ class TranscriberFasterWhisper(TranscriberInterface):
 
     def transcribe(self, audio_filename: str) -> str:
         segments, _ = self.model.transcribe(
-            audio_filename, language=self.lang, beam_size=5
+            audio_filename,
+            language=self.lang,
+            beam_size=5,
+            initial_prompt="ChatGPT may be in the question.",
         )
         return " ".join([segment.text for segment in segments])

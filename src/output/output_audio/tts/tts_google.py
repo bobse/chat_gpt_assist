@@ -11,7 +11,7 @@ class TTSGoogle(TTSInterface):
             ssml_gender=texttospeech.SsmlVoiceGender.NEUTRAL,
         )
         self.audio_config = texttospeech.AudioConfig(
-            audio_encoding=texttospeech.AudioEncoding.LINEAR16
+            audio_encoding=texttospeech.AudioEncoding.LINEAR16, speaking_rate=1.2
         )
 
     def text_to_speech(self, text: str) -> str:
