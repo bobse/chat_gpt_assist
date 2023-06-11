@@ -5,8 +5,13 @@
     "entity": "dining_room"
   },
   {
-    "user_input": "studio lights on",
+    "user_input": "tv lights on",
     "action": "on",
-    "entity": "studio_lights"
+    "entity": "tv_light"
+  },
+  {
+    "user_input": "set all lights to on",
+    "action": "on",
+    "entity": "all"
   }
 ]

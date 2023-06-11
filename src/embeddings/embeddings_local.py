@@ -25,11 +25,14 @@ class EmbeddingsLocal(EmbeddingsInterface):
     def get_embeddings(self, sentence: str):
         from sentence_transformers import SentenceTransformer
 
-        # model = SentenceTransformer("paraphrase-albert-small-v2")
         model = SentenceTransformer(
-            "all-MiniLM-L6-v2",
+            "paraphrase-albert-small-v2",
             cache_folder=Path(config.BASE_PATH, "temp/sentence_transformers"),
         )
+        # model = SentenceTransformer(
+        #     "all-MiniLM-L6-v2",
+        #     cache_folder=Path(config.BASE_PATH, "temp/sentence_transformers"),
+        # )
         return model.encode([sentence])[0]
 
     def insert_into_db(self, model_response: dict) -> None:

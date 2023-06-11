@@ -20,20 +20,22 @@ class Lights(BaseCommand):
 
         all_lights = cls.get_lights()
 
-        light = process.extractOne(
-            f"light.{validated_response.entity}",
-            all_lights.keys(),
-            scorer=fuzz.token_set_ratio,
-            score_cutoff=60,
-        )
+        if validated_response.entity.lower() == "all":
+            cls.switch_light(list(all_lights.keys()), validated_response.action)
 
-        if light is None:
-            return OutputResponse(
-                success=False,
-                raw_text=f"Could not find any lights named {validated_response.entity}",
+        else:
+            light = process.extractOne(
+                f"light.{validated_response.entity}",
+                all_lights.keys(),
+                scorer=fuzz.token_set_ratio,
+                score_cutoff=60,
             )
-
-        cls.switch_light(light[0], validated_response.action)
+            if light is None:
+                return OutputResponse(
+                    success=False,
+                    raw_text=f"Could not find any lights named {validated_response.entity}",
+                )
+            cls.switch_light([light[0]], validated_response.action)
 
         return OutputResponse(
             success=True,
@@ -59,10 +61,11 @@ class Lights(BaseCommand):
         }
 
     @staticmethod
-    def switch_light(light_id, action):
+    def switch_light(lights_id: list[str], action: bool):
         state = "on" if action else "off"
         url = f"{config.HOME_ASSISTANT_ADDRESS}/api/services/light/turn_{state}"
-        payload = {"entity_id": light_id}
+        payload = {"entity_id": lights_id}
+        print(payload)
         response = requests.post(
             url, headers=HEADERS, data=json.dumps(payload), timeout=5
         )

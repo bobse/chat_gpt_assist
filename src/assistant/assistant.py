@@ -115,7 +115,7 @@ class Assistant:
     def _check_cmd_cache(self, user_input: str) -> None | dict:
         similar_queries = self.embeddings.get_similar(user_input, 1)
         config.logger.debug(similar_queries)
-        if similar_queries[0]["score"] > 0.5:
+        if similar_queries[0]["score"] > 40:
             return None
         return similar_queries[0]["data"]
 
