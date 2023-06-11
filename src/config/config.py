@@ -25,6 +25,10 @@ if not OPENAI_API_KEY:
 
 PORCUPINE_KEY = os.getenv("PORCUPINE_KEY")
 
+# HomeAssistant
+HOME_ASSISTANT_KEY = os.getenv("HOME_ASSISTANT_KEY")
+HOME_ASSISTANT_ADDRESS = os.getenv("HOME_ASSISTANT_ADDRESS")
+
 # Language for whisper model
 LANGUAGE = os.getenv("LANGUAGE", "en")
 TTS_LANGUAGE = "en-US"
