@@ -1,11 +1,13 @@
-import argparse
 from pathlib import Path
 import shutil
 from cli_parser import CliParser
 from config import config
+
 from embeddings.embeddings_local import EmbeddingsLocal
 from input.input_audio.listener.listener_pyaudio import ListenerPyAudio
-from input.input_audio.transcriber.transcriber_openai import TranscriberOpenAi
+from input.input_audio.transcriber.transcriber_faster_whisper import (
+    TranscriberFasterWhisper,
+)
 from input.input_audio.wakeword.hotword_porcupine import HotwordPorcupine
 from input.input_text.input_text import InputText
 from input.input_audio.input_audio import InputAudio
@@ -17,7 +19,9 @@ from model.openai.model import OpenAiModel
 
 INPUTS = {
     "text": InputText(),
-    "audio": InputAudio(ListenerPyAudio, TranscriberOpenAi, HotwordPorcupine()),
+    "audio": InputAudio(
+        ListenerPyAudio, TranscriberFasterWhisper(), HotwordPorcupine()
+    ),
 }
 OUTPUTS = {"text": OutputText(), "audio": OutputAudio(TTSGoogle())}
 

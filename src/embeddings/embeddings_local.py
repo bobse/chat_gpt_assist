@@ -1,6 +1,7 @@
 import json
+from pathlib import Path
 import lancedb
-from sentence_transformers import SentenceTransformer
+
 from config import config
 from embeddings.embeddings_interface import EmbeddingsInterface
 
@@ -8,7 +9,6 @@ from embeddings.embeddings_interface import EmbeddingsInterface
 class EmbeddingsLocal(EmbeddingsInterface):
     def __init__(self, table_name: str) -> None:
         self.db = lancedb.connect(str(config.EMBEDDINGS_DB))
-        self.model = SentenceTransformer("paraphrase-albert-small-v2")
         try:
             self.table = self.db.create_table(
                 table_name,
@@ -23,7 +23,14 @@ class EmbeddingsLocal(EmbeddingsInterface):
             self.table = self.db.open_table(table_name)
 
     def get_embeddings(self, sentence: str):
-        return self.model.encode([sentence])[0]
+        from sentence_transformers import SentenceTransformer
+
+        # model = SentenceTransformer("paraphrase-albert-small-v2")
+        model = SentenceTransformer(
+            "all-MiniLM-L6-v2",
+            cache_folder=Path(config.BASE_PATH, "temp/sentence_transformers"),
+        )
+        return model.encode([sentence])[0]
 
     def insert_into_db(self, model_response: dict) -> None:
         self.table.add(

@@ -10,7 +10,7 @@ class InputAudio(InputInterface):
     def __init__(
         self,
         listener: Type[ListenerInterface],
-        transcriber: Type[TranscriberInterface],
+        transcriber: TranscriberInterface,
         hotword_detector: HotwordInterface = None,
     ) -> None:
         self.listener = listener
