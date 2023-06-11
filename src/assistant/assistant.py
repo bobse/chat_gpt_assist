@@ -34,8 +34,9 @@ class Assistant:
             try:
                 user_input = self._process_input()
                 json_response = self._check_cmd_cache(user_input)
-
+                is_cached = True
                 if json_response is None:
+                    is_cached = False
                     config.logger.info(
                         "No command in cache. Starting online pipeline..."
                     )
@@ -52,7 +53,9 @@ class Assistant:
                 command_response = self.commands[cmd_key].execute(json_response, self)
 
                 self.output.execute(command_response)
-                self._cache_model_response(json_response)
+
+                if not is_cached:
+                    self._cache_model_response(json_response)
 
             except KeyboardInterrupt:
                 config.logger.info("Exiting...")
@@ -111,7 +114,8 @@ class Assistant:
 
     def _check_cmd_cache(self, user_input: str) -> None | dict:
         similar_queries = self.embeddings.get_similar(user_input, 1)
-        if similar_queries[0]["score"] > 0.8:
+        config.logger.debug(similar_queries)
+        if similar_queries[0]["score"] > 0.5:
             return None
         return similar_queries[0]["data"]
 
