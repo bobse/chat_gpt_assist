@@ -146,9 +146,10 @@ class Assistant:
     def _get_base_prompt_text(self) -> str:
         prompt = "Your job is to classify the text separated by ||."
         prompt += "Here are some of examples of expected responses:\n {examples}"
-        prompt += "\n\nYour response must always be in json format in snake case typing and must"
-        prompt += "always contain the following keys 'command', 'keywords'."
-        prompt += "if you can not classify the command or the keywords,"
+        prompt += (
+            "\n\nYour response must always be in json format in snake case typing."
+        )
+        prompt += "if you can not classify the command,"
         prompt += "the value must be 'unknown'.\n"
         prompt += "Here's  a list of allowed commands: {commands} \n"
         prompt += "\nANSWERS CAN ONLY BE IN JSON FORMAT.  || {query} ||"
