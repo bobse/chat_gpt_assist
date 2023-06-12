@@ -1,13 +1,13 @@
 [
   {
     "user_input": "turn on the tv",
-    "action": "on",
-    "entity": null
+    "action": "power",
+    "entity": "on"
   },
   {
     "user_input": "turn off the tv",
-    "action": "off",
-    "entity": null
+    "action": "power",
+    "entity": "off"
   },
   {
     "user_input": "turn the volume on the tv up",
@@ -23,5 +23,15 @@
     "user_input": "i want to watch netflix on the tv",
     "action": "app",
     "entity": "netflix"
+  },
+  {
+    "user_input": "pause tv",
+    "action": "control",
+    "entity": "pause"
+  },
+  {
+    "user_input": "play tv",
+    "action": "control",
+    "entity": "play"
   }
 ]

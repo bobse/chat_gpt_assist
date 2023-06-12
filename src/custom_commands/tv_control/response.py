@@ -1,7 +1,8 @@
+from typing import Literal
 from pydantic import BaseModel
 
 
 class Response(BaseModel):
     user_input: str
-    action: str
-    entity: str | None
+    action: Literal["power", "volume", "app", "control"]
+    entity: str
