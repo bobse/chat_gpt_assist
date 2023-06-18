@@ -42,3 +42,5 @@ logger.setLevel(os.getenv("LOG_LEVEL", "INFO"))
 handler = logging.StreamHandler()
 handler.setFormatter(CustomLogFormatter())
 logger.addHandler(handler)
+
+TV_INPUTS = {"computer": "HDMI3", "chromecast": "HDMI1"}

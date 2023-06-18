@@ -15,6 +15,11 @@
     "entity": "up"
   },
   {
+    "user_input": "set tv volume to 10",
+    "action": "volume",
+    "entity": "10"
+  },
+  {
     "user_input": "mute the television",
     "action": "volume",
     "entity": "mute"
@@ -25,6 +30,16 @@
     "entity": "netflix"
   },
   {
+    "user_input": "change tv to Plex",
+    "action": "app",
+    "entity": "plex"
+  },
+  {
+    "user_input": "i want to watch youtube on the tv",
+    "action": "app",
+    "entity": "youtube"
+  },
+  {
     "user_input": "pause tv",
     "action": "control",
     "entity": "pause"
@@ -33,5 +48,15 @@
     "user_input": "play tv",
     "action": "control",
     "entity": "play"
+  },
+  {
+    "user_input": "set the tv to computer",
+    "action": "input",
+    "entity": "computer"
+  },
+  {
+    "user_input": "change the tv to chromecast",
+    "action": "input",
+    "entity": "chromecast"
   }
 ]

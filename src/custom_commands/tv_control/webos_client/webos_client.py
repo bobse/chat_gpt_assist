@@ -16,8 +16,7 @@ HANDSHAKE_FILE_NAME = "handshake.json"
 
 
 class PyLGTVPairException(Exception):
-    def __init__(self, id, message):
-        self.id = id
+    def __init__(self, message):
         self.message = message
 
 
@@ -90,7 +89,6 @@ class WebOsClient(object):
             f.write(json.dumps(key_dict))
 
     async def _send_register_payload(self, websocket):
-        """Send the register payload."""
         file = os.path.join(os.path.dirname(__file__), HANDSHAKE_FILE_NAME)
 
         data = codecs.open(file, "r", "utf-8")
@@ -114,11 +112,9 @@ class WebOsClient(object):
                 self.save_key_file()
 
     def is_registered(self):
-        """Paired with the tv."""
         return self.client_key is not None
 
     async def _register(self):
-        """Register wrapper."""
         logger.debug("register on %s", "ws://{}:{}".format(self.ip, self.port))
         try:
             websocket = await websockets.connect(
@@ -191,7 +187,6 @@ class WebOsClient(object):
             await websocket.close()
 
     def command(self, request_type, uri, payload):
-        """Build and send a command."""
         self.command_count += 1
 
         if payload is None:
@@ -216,11 +211,9 @@ class WebOsClient(object):
             loop.close()
 
     def request(self, uri, payload=None):
-        """Send a request."""
         self.command("request", uri, payload)
 
     def send_message(self, message, icon_path=None):
-        """Show a floating message."""
         icon_encoded_string = ""
         icon_extension = ""
 
@@ -238,9 +231,7 @@ class WebOsClient(object):
             },
         )
 
-    # Apps
     def get_apps(self):
-        """Return all apps."""
         self.request(EP_GET_APPS)
         return (
             {}
@@ -249,7 +240,6 @@ class WebOsClient(object):
         )
 
     def get_current_app(self):
-        """Get the current app id."""
         self.request(EP_GET_CURRENT_APP_INFO)
         return (
             None
@@ -258,24 +248,19 @@ class WebOsClient(object):
         )
 
     def launch_app(self, app):
-        """Launch an app."""
         self.command("request", EP_LAUNCH, {"id": app})
 
     def launch_app_with_params(self, app, params):
-        """Launch an app with parameters."""
         self.request(EP_LAUNCH, {"id": app, "params": params})
 
     def launch_app_with_content_id(self, app, contentId):
-        """Launch an app with contentId."""
         self.request(EP_LAUNCH, {"id": app, "contentId": contentId})
 
     def close_app(self, app):
-        """Close the current app."""
         self.request(EP_LAUNCHER_CLOSE, {"id": app})
 
     # Services
     def get_services(self):
-        """Get all services."""
         self.request(EP_GET_SERVICES)
         return (
             {}
@@ -284,30 +269,23 @@ class WebOsClient(object):
         )
 
     def get_software_info(self):
-        """Return the current software status."""
         self.request(EP_GET_SOFTWARE_INFO)
         return {} if self.last_response is None else self.last_response.get("payload")
 
     def power_off(self):
-        """Play media."""
         self.request(EP_POWER_OFF)
 
     def power_on(self):
-        """Play media."""
         self.request(EP_POWER_ON)
 
-    # 3D Mode
     def turn_3d_on(self):
-        """Turn 3D on."""
         self.request(EP_3D_ON)
 
     def turn_3d_off(self):
-        """Turn 3D off."""
         self.request(EP_3D_OFF)
 
     # Inputs
     def get_inputs(self):
-        """Get all inputs."""
         self.request(EP_GET_INPUTS)
         return (
             {}
@@ -316,29 +294,23 @@ class WebOsClient(object):
         )
 
     def get_input(self):
-        """Get current input."""
         return self.get_current_app()
 
     def set_input(self, input):
-        """Set the current input."""
         self.request(EP_SET_INPUT, {"inputId": input})
 
     # Audio
     def get_audio_status(self):
-        """Get the current audio status"""
         self.request(EP_GET_AUDIO_STATUS)
         return {} if self.last_response is None else self.last_response.get("payload")
 
     def get_muted(self):
-        """Get mute status."""
         return self.get_audio_status().get("mute")
 
     def set_mute(self, mute):
-        """Set mute."""
         self.request(EP_SET_MUTE, {"mute": mute})
 
     def get_volume(self):
-        """Get the current volume."""
         self.request(EP_GET_VOLUME)
         return (
             0
@@ -347,29 +319,23 @@ class WebOsClient(object):
         )
 
     def set_volume(self, volume):
-        """Set volume."""
         volume = max(0, volume)
         self.request(EP_SET_VOLUME, {"volume": volume})
 
     def volume_up(self):
-        """Volume up."""
         self.request(EP_VOLUME_UP)
 
     def volume_down(self):
-        """Volume down."""
         self.request(EP_VOLUME_DOWN)
 
     # TV Channel
     def channel_up(self):
-        """Channel up."""
         self.request(EP_TV_CHANNEL_UP)
 
     def channel_down(self):
-        """Channel down."""
         self.request(EP_TV_CHANNEL_DOWN)
 
     def get_channels(self):
-        """Get all tv channels."""
         self.request(EP_GET_TV_CHANNELS)
         return (
             {}
@@ -378,58 +344,44 @@ class WebOsClient(object):
         )
 
     def get_current_channel(self):
-        """Get the current tv channel."""
         self.request(EP_GET_CURRENT_CHANNEL)
         return {} if self.last_response is None else self.last_response.get("payload")
 
     def get_channel_info(self):
-        """Get the current channel info."""
         self.request(EP_GET_CHANNEL_INFO)
         return {} if self.last_response is None else self.last_response.get("payload")
 
     def set_channel(self, channel):
-        """Set the current channel."""
         self.request(EP_SET_CHANNEL, {"channelId": channel})
 
-    # Media control
     def play(self):
-        """Play media."""
         self.request(EP_MEDIA_PLAY)
 
     def pause(self):
-        """Pause media."""
         self.request(EP_MEDIA_PAUSE)
 
     def stop(self):
-        """Stop media."""
         self.request(EP_MEDIA_STOP)
 
     def close(self):
-        """Close media."""
         self.request(EP_MEDIA_CLOSE)
 
     def rewind(self):
-        """Rewind media."""
         self.request(EP_MEDIA_REWIND)
 
     def fast_forward(self):
-        """Fast Forward media."""
         self.request(EP_MEDIA_FAST_FORWARD)
 
     # Keys
     def send_enter_key(self):
-        """Send enter key."""
         self.request(EP_SEND_ENTER)
 
     def send_delete_key(self):
-        """Send delete key."""
         self.request(EP_SEND_DELETE)
 
     # Web
     def open_url(self, url):
-        """Open URL."""
         self.request(EP_OPEN, {"target": url})
 
     def close_web(self):
-        """Close web app."""
         self.request(EP_CLOSE_WEB_APP)

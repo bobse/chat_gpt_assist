@@ -16,7 +16,7 @@ class OutputAudio(OutputInterface):
             self.fail()
             return
 
-        if len(response.raw_text) == 0:
+        if response.raw_text is None or len(response.raw_text) == 0:
             self._play_file(config.SUCCESS_SOUND)
             return
 
