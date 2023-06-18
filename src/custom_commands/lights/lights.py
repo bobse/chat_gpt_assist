@@ -21,21 +21,28 @@ class Lights(BaseCommand):
         all_lights = cls.get_lights()
 
         if validated_response.entity.lower() == "all":
-            cls.switch_light(list(all_lights.keys()), validated_response.action)
-
-        else:
-            light = process.extractOne(
-                f"light.{validated_response.entity}",
-                all_lights.keys(),
-                scorer=fuzz.token_set_ratio,
-                score_cutoff=60,
+            all_lights_ids = [light["id"] for light in all_lights.values()]
+            cls.switch_light(all_lights_ids, validated_response.action)
+            return OutputResponse(
+                success=True,
+                raw_text="",
             )
-            if light is None:
-                return OutputResponse(
-                    success=False,
-                    raw_text=f"Could not find any lights named {validated_response.entity}",
-                )
-            cls.switch_light([light[0]], validated_response.action)
+
+        light_name = process.extractOne(
+            validated_response.entity,
+            all_lights.keys(),
+            scorer=fuzz.token_set_ratio,
+            score_cutoff=60,
+        )
+
+        if light_name is None:
+            return OutputResponse(
+                success=False,
+                raw_text=f"Could not find any lights named {validated_response.entity}",
+            )
+
+        light_id = all_lights[light_name[0]].get("id")
+        cls.switch_light([light_id], validated_response.action)
 
         return OutputResponse(
             success=True,
@@ -52,8 +59,8 @@ class Lights(BaseCommand):
 
         entities = response.json()
         return {
-            e["entity_id"]: {
-                "name": e["attributes"]["friendly_name"],
+            Lights.format_light_name(e["attributes"]["friendly_name"]): {
+                "id": e["entity_id"],
                 "state": e["state"],
             }
             for e in entities
@@ -65,9 +72,13 @@ class Lights(BaseCommand):
         state = "on" if action else "off"
         url = f"{config.HOME_ASSISTANT_ADDRESS}/api/services/light/turn_{state}"
         payload = {"entity_id": lights_id}
-        print(payload)
+        config.logger.debug(payload)
         response = requests.post(
             url, headers=HEADERS, data=json.dumps(payload), timeout=5
         )
         if response.status_code != 200:
             raise requests.HTTPError("Failed to reach home assistant")
+
+    @staticmethod
+    def format_light_name(light: str) -> str:
+        return "_".join(light.split(" "))
