@@ -13,6 +13,7 @@ from input.input_text.input_text import InputText
 from input.input_audio.input_audio import InputAudio
 from output.output_audio.output_audio import OutputAudio
 from output.output_audio.tts.tts_google import TTSGoogle
+from output.output_audio.tts.tts_openai import TTSOpenAi
 from output.output_text.output_text import OutputText
 from assistant.assistant import Assistant
 from model.openai.model import OpenAiModel
@@ -23,7 +24,7 @@ INPUTS = {
         ListenerPyAudio, TranscriberFasterWhisper(), HotwordPorcupine()
     ),
 }
-OUTPUTS = {"text": OutputText(), "audio": OutputAudio(TTSGoogle())}
+OUTPUTS = {"text": OutputText(), "audio": OutputAudio(TTSOpenAi())}
 
 
 def reset_db():
