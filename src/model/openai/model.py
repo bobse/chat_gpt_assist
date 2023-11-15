@@ -9,7 +9,7 @@ client = OpenAI(api_key=config.OPENAI_API_KEY)
 
 class OpenAiModel(ModelInterface):
     @staticmethod
-    def process(model_prompt, temperature: int = 0, model="gpt-4-1106-preview"):
+    def process(model_prompt, temperature: int = 0, model="gpt-3.5-turbo-1106"):
         try:
             messages = [{"role": "user", "content": model_prompt}]
             response = client.chat.completions.create(
