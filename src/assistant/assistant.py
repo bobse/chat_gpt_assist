@@ -115,7 +115,7 @@ class Assistant:
     def _check_cmd_cache(self, user_input: str) -> None | dict:
         similar_queries = self.embeddings.get_similar(user_input, 1)
         config.logger.debug(similar_queries)
-        if similar_queries[0]["score"] > 40:
+        if similar_queries[0]["score"] > 50:
             return None
         return similar_queries[0]["data"]
 
@@ -147,7 +147,7 @@ class Assistant:
         prompt = "Your job is to classify the text separated by ||."
         prompt += "Here are some of examples of expected responses:\n {examples}"
         prompt += (
-            "\n\nYour response must always be in json format in snake case typing."
+            "\n\nYour response must always be in JSON format in snake case typing."
         )
         prompt += "if you can not classify the command,"
         prompt += "the value must be 'unknown'.\n"

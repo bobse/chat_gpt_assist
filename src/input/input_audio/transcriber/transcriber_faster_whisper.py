@@ -14,6 +14,7 @@ class TranscriberFasterWhisper(TranscriberInterface):
             compute_type="int8",
             download_root=Path(config.BASE_PATH, "temp/models"),
             cpu_threads=4,
+            local_files_only=False,
         )
 
     def transcribe(self, audio_filename: str) -> str:

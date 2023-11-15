@@ -52,10 +52,13 @@ class Lights(BaseCommand):
     @staticmethod
     def get_lights():
         url = f"{config.HOME_ASSISTANT_ADDRESS}/api/states"
-        response = requests.get(url, headers=HEADERS, timeout=5)
+        try:
+            response = requests.get(url, headers=HEADERS, timeout=5)
 
-        if response.status_code != 200:
-            raise requests.HTTPError("Failed to reach home assistant")
+            if response.status_code != 200:
+                raise ConnectionRefusedError("Failed to reach home assistant")
+        except Exception as ex:
+            raise ConnectionRefusedError("Failed to reach home assistant")
 
         entities = response.json()
         return {
@@ -73,11 +76,14 @@ class Lights(BaseCommand):
         url = f"{config.HOME_ASSISTANT_ADDRESS}/api/services/light/turn_{state}"
         payload = {"entity_id": lights_id}
         config.logger.debug(payload)
-        response = requests.post(
-            url, headers=HEADERS, data=json.dumps(payload), timeout=5
-        )
-        if response.status_code != 200:
-            raise requests.HTTPError("Failed to reach home assistant")
+        try:
+            response = requests.post(
+                url, headers=HEADERS, data=json.dumps(payload), timeout=5
+            )
+            if response.status_code != 200:
+                raise ConnectionRefusedError("Failed to reach home assistant")
+        except Exception as ex:
+            raise ConnectionRefusedError("Failed to reach home assistant")
 
     @staticmethod
     def format_light_name(light: str) -> str:
