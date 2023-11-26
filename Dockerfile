@@ -14,7 +14,7 @@ RUN apt-get -y install build-essential python3-dev g++
 COPY ./requirements.txt $APP_HOME
 RUN python -m pip install --upgrade pip
 
-# INSTALLING PYTORCH ONLY FOR CPU
+# INSTALLING PYTORCH ONLY FOR CPU AND SENTENCE-TRANSFORMERS
 RUN pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
 RUN pip install transformers tqdm numpy scikit-learn scipy nltk sentencepiece
 RUN pip install --no-deps sentence-transformers
