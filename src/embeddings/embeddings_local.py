@@ -26,14 +26,11 @@ class EmbeddingsLocal(EmbeddingsInterface):
         from sentence_transformers import SentenceTransformer
 
         model = SentenceTransformer(
-            "paraphrase-albert-small-v2",
+            "intfloat/e5-small-v2",
             cache_folder=Path(config.BASE_PATH, "temp/sentence_transformers"),
         )
-        # model = SentenceTransformer(
-        #     "all-MiniLM-L6-v2",
-        #     cache_folder=Path(config.BASE_PATH, "temp/sentence_transformers"),
-        # )
-        return model.encode([sentence])[0]
+
+        return model.encode([f"query: {sentence}"])[0]
 
     def insert_into_db(self, model_response: dict) -> None:
         self.table.add(

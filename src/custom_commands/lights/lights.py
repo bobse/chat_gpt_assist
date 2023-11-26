@@ -1,6 +1,6 @@
 import json
 from base_command.base_command import BaseCommand
-from custom_commands.lights.response import Response
+from custom_commands.lights.response import LightStateEnum, Response
 from output.output_response import OutputResponse
 from config import config
 import requests
@@ -71,11 +71,12 @@ class Lights(BaseCommand):
         }
 
     @staticmethod
-    def switch_light(lights_id: list[str], action: bool):
-        state = "on" if action else "off"
-        url = f"{config.HOME_ASSISTANT_ADDRESS}/api/services/light/turn_{state}"
+    def switch_light(lights_id: list[str], action: str):
+        url = f"{config.HOME_ASSISTANT_ADDRESS}/api/services/light/turn_{action.value}"
         payload = {"entity_id": lights_id}
         config.logger.debug(payload)
+        config.logger.debug(url)
+
         try:
             response = requests.post(
                 url, headers=HEADERS, data=json.dumps(payload), timeout=5
