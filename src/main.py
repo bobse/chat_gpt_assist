@@ -24,7 +24,7 @@ INPUTS = {
         ListenerPyAudio, TranscriberFasterWhisper(), HotwordPorcupine()
     ),
 }
-OUTPUTS = {"text": OutputText(), "audio": OutputAudio(TTSGoogle())}
+OUTPUTS = {"text": OutputText(), "audio": OutputAudio(TTSOpenAi())}
 
 
 def reset_db():

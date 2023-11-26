@@ -24,7 +24,11 @@ Browse these folders and files to get a better understanding of how to implement
 
 <br />
 
-## Setup Google TTS
+## TTS
+
+Currently we have switched to use TTS from OpenAi as well. There's also an implemented googleTTS module that you can switch if you want to experiment with.
+
+## Setup Google TTS (if you want to use TTS from Google)
 
 Since there's a generous free limit for google TTS we decided to use this solution as the main one.
 Of course, due to the modular nature of this implementation you can always substitute for a different TTS of your choice.
