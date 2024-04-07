@@ -44,3 +44,5 @@ handler.setFormatter(CustomLogFormatter())
 logger.addHandler(handler)
 
 TV_INPUTS = {"computer": "HDMI3", "chromecast": "HDMI1"}
+
+TV_IP = os.getenv("TV_IP")

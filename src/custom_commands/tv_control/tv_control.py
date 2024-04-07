@@ -21,7 +21,7 @@ class TvControl(BaseCommand):
     @classmethod
     def execute(cls, model_response, assistant):
         cls.TV = WebOsClient(
-            "192.168.15.209", key_file_path=f"{Path(__file__).parent}/.pylgtv"
+            config.TV_IP, key_file_path=f"{Path(__file__).parent}/.pylgtv"
         )
         validated_response: Response = cls.parse_validate_response(model_response)
         try:
