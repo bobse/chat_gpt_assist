@@ -32,15 +32,15 @@ def reset_db():
 
 
 if __name__ == "__main__":
-    args = CliParser().args()
+    cliParser = CliParser()
     config.logger.info("Starting assistant...")
-    if args.refresh_examples:
+    if cliParser.should_reset_db():
         config.logger.info("Refreshing Examples Database")
         reset_db()
 
     assistant = Assistant(
-        INPUTS[args.input],
-        OUTPUTS[args.output],
+        INPUTS[cliParser.get_input()],
+        OUTPUTS[cliParser.get_output()],
         OpenAiModel,
         EmbeddingsLocal("commands"),
     )

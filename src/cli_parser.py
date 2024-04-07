@@ -2,12 +2,14 @@ import argparse
 
 
 class CliParser:
+    _args: argparse.Namespace = None
+
     def __init__(self) -> None:
-        self.parser = argparse.ArgumentParser(
+        parser = argparse.ArgumentParser(
             prog="LLM Assistant",
             description="Simple modular assistant",
         )
-        self.parser.add_argument(
+        parser.add_argument(
             "--input",
             dest="input",
             action="store",
@@ -17,7 +19,7 @@ class CliParser:
             help="Set the input. Default: audio",
         )
 
-        self.parser.add_argument(
+        parser.add_argument(
             "--output",
             dest="output",
             action="store",
@@ -27,12 +29,20 @@ class CliParser:
             help="Set the output. Default: audio",
         )
 
-        self.parser.add_argument(
+        parser.add_argument(
             "--refresh_examples",
             action=argparse.BooleanOptionalAction,
             dest="refresh_examples",
             help="Resets the examples embeddings DB",
         )
 
-    def args(self):
-        return self.parser.parse_args()
+        self._args = parser.parse_args()
+
+    def get_input(self) -> str:
+        return self._args.input
+
+    def get_output(self) -> str:
+        return self._args.output
+
+    def should_reset_db(self) -> bool:
+        return self._args.refresh_examples is not None
